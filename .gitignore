@@ -1,0 +1,4 @@
+"venv/" 
+"__pycache__/" 
+"*.csv"   # Si tu ne veux pas versionner le gros dataset
+".ipynb_checkpoints/" 
