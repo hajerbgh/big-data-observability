@@ -1,0 +1,3 @@
+Config (chunk_size),Nb lots,Lignes totales,Temps total (s),Débit moyen (rows/s),RAM/lot moy. (MB)
+"100,000",78,"7,728,394",35.05,"220,466",124.3
+"1,000,000",8,"7,728,394",37.36,"206,872",1211.9

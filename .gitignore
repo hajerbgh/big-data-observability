@@ -1,4 +1,26 @@
-"venv/" 
-"__pycache__/" 
-"*.csv"   # Si tu ne veux pas versionner le gros dataset
-".ipynb_checkpoints/" 
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+*.parquet
+
+# Dataset source brut (trop lourd pour Git)
+data/US_Accidents_March23.csv
+
+# Micro-lots générés (volumineux, reproductibles)
+data/batches/
+
+# Lots intermédiaires du benchmark (reproductibles)
+data/benchmarks/100k/batch_*.csv
+data/benchmarks/1000k/batch_*.csv
+
+# -----------------------------------------
+# Fichiers VERSIONNÉS (ne pas ignorer) :
+#   data/quality_metrics.csv
+#   data/alerts_log.csv
+#   data/performance_log.csv
+#   data/benchmarks/*/performance_log.csv
+#   data/benchmarks/*/alerts_log.csv
+#   data/benchmarks/comparison.csv
+# -----------------------------------------
