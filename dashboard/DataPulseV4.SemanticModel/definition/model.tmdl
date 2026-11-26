@@ -1,0 +1,21 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+ref table WeightCompleteness
+ref table WeightUniqueness
+ref table WeightValidity
+ref table WeightConsistency
+ref table WeightConformity
+ref table QualityTarget
+ref table FactQuality
+ref table FactPerformance
+ref table FactAlerts
+ref table FactBenchmark
+ref table DimBatch
+ref table Metrics
+

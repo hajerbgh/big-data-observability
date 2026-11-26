@@ -1,0 +1,72 @@
+table FactPerformance
+	lineageTag: 411de74d-383c-4ae0-8e64-620912e7fbe4
+
+	column Batch_ID
+		dataType: string
+		lineageTag: 530cf09c-fe4f-4e52-944a-d128be4504c5
+		summarizeBy: none
+		sourceColumn: Batch_ID
+
+	column Chunk_Size
+		dataType: int64
+		lineageTag: 8bd6d834-e937-49c2-b357-0c1a7c4308b7
+		summarizeBy: none
+		sourceColumn: Chunk_Size
+
+	column Record_Count
+		dataType: int64
+		lineageTag: 3a3bbbb9-abba-4d59-bcf7-ab2a5add186b
+		summarizeBy: none
+		sourceColumn: Record_Count
+
+	column Read_Time_Seconds
+		dataType: double
+		lineageTag: a7a7e2c7-2c7b-4abe-9616-b8b634c787f7
+		summarizeBy: none
+		sourceColumn: Read_Time_Seconds
+
+	column Processing_Time_Seconds
+		dataType: double
+		lineageTag: 7347795e-8f82-4e86-a535-13dab6f977e8
+		summarizeBy: none
+		sourceColumn: Processing_Time_Seconds
+
+	column Write_Time_Seconds
+		dataType: double
+		lineageTag: cbf9c730-fea4-4efb-b596-a5bc23b11dd0
+		summarizeBy: none
+		sourceColumn: Write_Time_Seconds
+
+	column Execution_Time_Seconds
+		dataType: double
+		lineageTag: dfd4e000-a676-40b2-8c2c-b888bf57b736
+		summarizeBy: none
+		sourceColumn: Execution_Time_Seconds
+
+	column Processing_Speed_Rows_Per_Sec
+		dataType: double
+		lineageTag: 2c74df21-73bd-41dd-8f1f-e836364dbdf2
+		summarizeBy: none
+		sourceColumn: Processing_Speed_Rows_Per_Sec
+
+	column Memory_Usage_MB
+		dataType: double
+		lineageTag: 1bf4d85f-3f3a-4f4b-979b-5881412c99a9
+		summarizeBy: none
+		sourceColumn: Memory_Usage_MB
+
+	column Missing_Start_Time
+		dataType: int64
+		lineageTag: dedd9c66-e511-48a8-a5c5-e236ded5f986
+		summarizeBy: none
+		sourceColumn: Missing_Start_Time
+
+	partition FactPerformance = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\YourRepository\data\performance_log.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Headers, {{"Batch_ID", type text}, {"Chunk_Size", Int64.Type}, {"Record_Count", Int64.Type}, {"Read_Time_Seconds", type number}, {"Processing_Time_Seconds", type number}, {"Write_Time_Seconds", type number}, {"Execution_Time_Seconds", type number}, {"Processing_Speed_Rows_Per_Sec", type number}, {"Memory_Usage_MB", type number}, {"Missing_Start_Time", Int64.Type}}, "en-US")
+				in
+				    Typed

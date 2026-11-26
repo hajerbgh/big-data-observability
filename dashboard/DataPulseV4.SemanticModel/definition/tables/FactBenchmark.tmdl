@@ -1,0 +1,48 @@
+table FactBenchmark
+	lineageTag: d9f415e8-5fc8-4726-8171-d6a21a2088ef
+
+	column 'Config (chunk_size)'
+		dataType: string
+		lineageTag: 25cfad3e-860c-4431-a0d2-d6124d67609b
+		summarizeBy: none
+		sourceColumn: Config (chunk_size)
+
+	column 'Nb lots'
+		dataType: int64
+		lineageTag: 69ef8731-9f1d-42b2-88a7-10272135e2e4
+		summarizeBy: none
+		sourceColumn: Nb lots
+
+	column 'Lignes totales'
+		dataType: int64
+		lineageTag: b815535c-dba2-4e59-8e10-746a2b4f9e27
+		summarizeBy: none
+		sourceColumn: Lignes totales
+
+	column 'Temps total (s)'
+		dataType: double
+		lineageTag: 80519f7b-f4f3-48aa-97b3-e1771e5d2d26
+		summarizeBy: none
+		sourceColumn: Temps total (s)
+
+	column 'Débit moyen (rows/s)'
+		dataType: int64
+		lineageTag: a53c7db2-e9aa-464d-bb2a-4a7ffcb1835a
+		summarizeBy: none
+		sourceColumn: Débit moyen (rows/s)
+
+	column 'RAM/lot moy. (MB)'
+		dataType: double
+		lineageTag: 52d1ed56-3241-4ba3-b25c-deb919b34b0d
+		summarizeBy: none
+		sourceColumn: RAM/lot moy. (MB)
+
+	partition FactBenchmark = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\YourRepository\data\benchmarks\comparison.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Headers, {{"Config (chunk_size)", type text}, {"Nb lots", Int64.Type}, {"Lignes totales", Int64.Type}, {"Temps total (s)", type number}, {"Débit moyen (rows/s)", Int64.Type}, {"RAM/lot moy. (MB)", type number}}, "en-US")
+				in
+				    Typed

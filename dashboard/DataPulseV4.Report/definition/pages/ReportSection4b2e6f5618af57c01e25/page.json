@@ -1,0 +1,76 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
+  "name": "ReportSection4b2e6f5618af57c01e25",
+  "displayName": "Anomalies",
+  "displayOption": "FitToPage",
+  "width": 1600,
+  "height": 900,
+  "objects": {
+    "background": [
+      {
+        "properties": {
+          "color": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "Literal": {
+                    "Value": "'#F9F7FA'"
+                  }
+                }
+              }
+            }
+          },
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "visualInteractions": [
+    {
+      "source": "ff617736228969fdf417",
+      "target": "ee428033d2b3d2c30626",
+      "type": "NoFilter"
+    },
+    {
+      "source": "ff617736228969fdf417",
+      "target": "176d51f5a578f5b72f7a",
+      "type": "NoFilter"
+    },
+    {
+      "source": "ff617736228969fdf417",
+      "target": "26ac2126183f83392150",
+      "type": "NoFilter"
+    },
+    {
+      "source": "57d3ffa5ca299e6cddb6",
+      "target": "ee428033d2b3d2c30626",
+      "type": "NoFilter"
+    },
+    {
+      "source": "57d3ffa5ca299e6cddb6",
+      "target": "176d51f5a578f5b72f7a",
+      "type": "NoFilter"
+    },
+    {
+      "source": "57d3ffa5ca299e6cddb6",
+      "target": "26ac2126183f83392150",
+      "type": "NoFilter"
+    },
+    {
+      "source": "57d3ffa5ca299e6cddb6",
+      "target": "98d3a6bb538f129b374b",
+      "type": "NoFilter"
+    },
+    {
+      "source": "ff617736228969fdf417",
+      "target": "98d3a6bb538f129b374b",
+      "type": "NoFilter"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+table WeightCompleteness
+	lineageTag: aa62a9a4-a96f-40ed-bea3-0aad8318cdf8
+
+	column Weight
+		dataType: int64
+		lineageTag: 679e434a-3ba0-4947-863a-54c97e2c4bc0
+		summarizeBy: none
+		sourceColumn: Weight
+
+	partition WeightCompleteness = m
+		mode: import
+		source =
+				Table.TransformColumnTypes(#table(type table [Weight=number], List.Transform(List.Numbers(0, 21, 5), each {_})), {{"Weight", Int64.Type}})

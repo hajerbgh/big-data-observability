@@ -1,0 +1,23 @@
+table DimBatch
+	lineageTag: 4e1e84ba-2584-4965-b4c9-c828d8afe33b
+
+	column Batch_ID
+		dataType: string
+		lineageTag: f7ed2d65-f022-46f1-a7af-4d5e3de3ecff
+		summarizeBy: none
+		sourceColumn: Batch_ID
+
+	column Batch_Number
+		dataType: int64
+		lineageTag: 11ab710e-62ed-44b2-89e9-1404f027981d
+		summarizeBy: none
+		sourceColumn: Batch_Number
+
+	partition DimBatch = m
+		mode: import
+		source =
+				let
+				    IDs = Table.Distinct(Table.SelectColumns(FactPerformance, {"Batch_ID"})),
+				    Final = Table.AddColumn(IDs, "Batch_Number", each Number.FromText(Text.AfterDelimiter([Batch_ID], "_")), Int64.Type)
+				in
+				    Final

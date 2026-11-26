@@ -1,0 +1,61 @@
+table FactAlerts
+	lineageTag: 94780176-3c5b-4102-b91c-92b2cdcd2265
+
+	column Timestamp
+		dataType: dateTime
+		lineageTag: d5e5b513-ea09-43ce-aabe-fa2020fc88e8
+		summarizeBy: none
+		sourceColumn: Timestamp
+		formatString: yyyy-MM-dd HH:mm:ss
+
+	column Batch_ID
+		dataType: string
+		lineageTag: 5e95f5fc-70d1-43c4-a391-86e5437e1a1c
+		summarizeBy: none
+		sourceColumn: Batch_ID
+
+	column Anomaly_Type
+		dataType: string
+		lineageTag: 647f2a75-c27e-4791-9159-62ec4a35fc92
+		summarizeBy: none
+		sourceColumn: Anomaly_Type
+
+	column Target_Variable
+		dataType: string
+		lineageTag: 93c6eb71-cdfa-4760-9b71-ae959f1157fa
+		summarizeBy: none
+		sourceColumn: Target_Variable
+
+	column Metric_Value
+		dataType: double
+		lineageTag: 0cc342e6-0d12-4138-920a-807a7f7e7548
+		summarizeBy: none
+		sourceColumn: Metric_Value
+
+	column Threshold_Reference
+		dataType: double
+		lineageTag: 28119454-ea21-4758-a5ef-b4c7187ab6e9
+		summarizeBy: none
+		sourceColumn: Threshold_Reference
+
+	column Severity_Level
+		dataType: string
+		lineageTag: 358ae508-5bc0-48f8-bcca-0da8f8365e4c
+		summarizeBy: none
+		sourceColumn: Severity_Level
+
+	column Message
+		dataType: string
+		lineageTag: e80d65c7-ee88-43c3-b183-905f76803332
+		summarizeBy: none
+		sourceColumn: Message
+
+	partition FactAlerts = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\YourRepository\data\alerts_log.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Headers, {{"Timestamp", type datetime}, {"Batch_ID", type text}, {"Anomaly_Type", type text}, {"Target_Variable", type text}, {"Metric_Value", type number}, {"Threshold_Reference", type number}, {"Severity_Level", type text}, {"Message", type text}}, "en-US")
+				in
+				    Typed

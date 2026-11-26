@@ -1,0 +1,13 @@
+table QualityTarget
+	lineageTag: 2a0f5505-06ed-44ac-b932-87724a2ae8ce
+
+	column Target
+		dataType: int64
+		lineageTag: 8a8df144-77e7-410c-9b24-28fa2333b3d2
+		summarizeBy: none
+		sourceColumn: Target
+
+	partition QualityTarget = m
+		mode: import
+		source =
+				Table.TransformColumnTypes(#table(type table [Target=number], List.Transform({80..100}, each {_})), {{"Target", Int64.Type}})
