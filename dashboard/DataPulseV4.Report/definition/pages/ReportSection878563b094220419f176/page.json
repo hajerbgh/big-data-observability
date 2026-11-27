@@ -1,0 +1,61 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
+  "name": "ReportSection878563b094220419f176",
+  "displayName": "Quality Lab",
+  "displayOption": "FitToPage",
+  "width": 1600,
+  "height": 900,
+  "objects": {
+    "background": [
+      {
+        "properties": {
+          "color": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "Literal": {
+                    "Value": "'#F9F7FA'"
+                  }
+                }
+              }
+            }
+          },
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "visualInteractions": [
+    {
+      "source": "bfddfd88e2a2b30e4359",
+      "target": "bf0e3035f72de1528527",
+      "type": "NoFilter"
+    },
+    {
+      "source": "bfddfd88e2a2b30e4359",
+      "target": "d4c112caba6c57a09910",
+      "type": "NoFilter"
+    },
+    {
+      "source": "bfddfd88e2a2b30e4359",
+      "target": "18aadd7321d7e6a6bd26",
+      "type": "NoFilter"
+    },
+    {
+      "source": "bfddfd88e2a2b30e4359",
+      "target": "2b8de9d2d0dc2fdc7b1e",
+      "type": "NoFilter"
+    },
+    {
+      "source": "bfddfd88e2a2b30e4359",
+      "target": "9efc2a3bfea63c08923a",
+      "type": "NoFilter"
+    }
+  ]
+}

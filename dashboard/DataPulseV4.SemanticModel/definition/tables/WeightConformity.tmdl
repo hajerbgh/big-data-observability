@@ -1,0 +1,13 @@
+table WeightConformity
+	lineageTag: 7846accb-a009-45ac-afff-da4d5e83e6c3
+
+	column Weight
+		dataType: int64
+		lineageTag: d56da181-00ba-433d-bf5d-b8420674ebf7
+		summarizeBy: none
+		sourceColumn: Weight
+
+	partition WeightConformity = m
+		mode: import
+		source =
+				Table.TransformColumnTypes(#table(type table [Weight=number], List.Transform(List.Numbers(0, 21, 5), each {_})), {{"Weight", Int64.Type}})

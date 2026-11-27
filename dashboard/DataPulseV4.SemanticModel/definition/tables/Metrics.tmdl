@@ -1,0 +1,293 @@
+table Metrics
+	lineageTag: 15d6198d-c50f-4494-b980-f9e4c562523c
+
+	column Anchor
+		dataType: int64
+		lineageTag: 866ddd89-7239-4c7e-ad27-14e76a8bce11
+		summarizeBy: none
+		sourceColumn: Anchor
+
+	measure 'Total Records' = SUM(FactPerformance[Record_Count])
+		lineageTag: 47bbf57e-4173-414e-a20a-3fe0a135c067
+		formatString: #,0
+
+	measure 'Total Batches' = DISTINCTCOUNT(DimBatch[Batch_ID])
+		lineageTag: 6e856635-381a-4494-8f46-69a766bcf5f9
+		formatString: #,0
+
+	measure 'Rule Violations' = SUM(FactQuality[Error_Count])
+		lineageTag: f0c2ae92-1a62-49ea-9fb1-647a4d594b36
+		formatString: #,0
+
+	measure 'Rule Opportunities' = SUM(FactQuality[Total_Record_Count])
+		lineageTag: 7cb8e37c-62ba-4147-8cec-049fb4e17db1
+		formatString: #,0
+
+	measure 'Compliance Rate' = IF([Rule Opportunities] > 0, 1 - DIVIDE([Rule Violations], [Rule Opportunities]), BLANK())
+		lineageTag: b40264ea-f4ae-40c9-8eb1-9a520a419234
+		formatString: 0.00%
+
+	measure 'Completeness Score' = CALCULATE([Compliance Rate], FactQuality[Rule_Category] = "Completeness")
+		lineageTag: e2efeebf-a4df-41aa-838b-987a5717b714
+		formatString: 0.00%
+
+	measure 'Uniqueness Score' = CALCULATE([Compliance Rate], FactQuality[Rule_Category] = "Uniqueness")
+		lineageTag: 0f7c9d59-00c9-4c96-a691-4ca022d8348f
+		formatString: 0.00%
+
+	measure 'Validity Score' = CALCULATE([Compliance Rate], FactQuality[Rule_Category] = "Validity")
+		lineageTag: d4c80276-9be0-49bc-b566-c7b2b6b30f3e
+		formatString: 0.0000%
+
+	measure 'Consistency Score' = CALCULATE([Compliance Rate], FactQuality[Rule_Category] = "Consistency")
+		lineageTag: b68fd173-a95a-4bf4-a3b6-8216fb561e4a
+		formatString: 0.00%
+
+	measure 'Conformity Score' = CALCULATE([Compliance Rate], FactQuality[Rule_Category] = "Conformity")
+		lineageTag: 67ef98cf-91c0-42b3-aef7-640f0d8b7eff
+		formatString: 0.00%
+
+	measure 'Global Quality Score' = VAR C = [Completeness Score] VAR U = [Uniqueness Score] VAR V = [Validity Score] VAR S = [Consistency Score] VAR F = [Conformity Score] RETURN IF(ISBLANK(C) || ISBLANK(U) || ISBLANK(V) || ISBLANK(S) || ISBLANK(F), BLANK(), DIVIDE(C+U+V+S+F,5))
+		lineageTag: 2a5106d5-2fd9-470a-8711-9db1f7b5019a
+		formatString: 0.00%
+
+	measure 'Total Alerts' = COALESCE(COUNTROWS(FactAlerts),0)
+		lineageTag: 2923a566-9a52-4dc8-a2cb-8b3f3be15d60
+		formatString: #,0
+
+	measure 'High Alerts' = CALCULATE([Total Alerts], KEEPFILTERS(FactAlerts[Severity_Level] = "HIGH"))
+		lineageTag: f5956a86-2ead-4859-a397-8c657f8fe7eb
+		formatString: #,0
+
+	measure 'Medium Alerts' = CALCULATE([Total Alerts], FactAlerts[Severity_Level] = "MEDIUM")
+		lineageTag: f152f2b2-f816-4a33-b54b-3c216c5e05c8
+		formatString: #,0
+
+	measure 'Alerted Batches' = COALESCE(DISTINCTCOUNT(FactAlerts[Batch_ID]),0)
+		lineageTag: eabad688-da56-49a9-b92e-d407cfc3b91f
+		formatString: #,0
+
+	measure 'Alert Share' = DIVIDE([Total Alerts],CALCULATE([Total Alerts],REMOVEFILTERS(FactAlerts[Severity_Level])))
+		lineageTag: 26752825-6e3c-494f-8634-06f51bb20b5d
+		formatString: 0.00%
+
+	measure 'Volume Spikes' = CALCULATE([Total Alerts],FactAlerts[Anomaly_Type]="Volume Spike")
+		lineageTag: 6d6e811f-dd13-4f78-8700-89b03bf0e662
+		formatString: #,0
+
+	measure 'Volume Drops' = CALCULATE([Total Alerts],FactAlerts[Anomaly_Type]="Volume Drop")
+		lineageTag: 58ec7f82-9bcd-4570-9d4e-0130203e1032
+		formatString: #,0
+
+	measure 'Drift Alerts' = CALCULATE([Total Alerts],FactAlerts[Anomaly_Type]="Data Drift")
+		lineageTag: d42f8864-4236-4590-80c5-a992d979c8ad
+		formatString: #,0
+
+	measure 'Outlier Alerts' = CALCULATE([Total Alerts],FactAlerts[Anomaly_Type]="Numeric Outlier")
+		lineageTag: 84cb30ce-9387-4578-a360-373c5fe1fc03
+		formatString: #,0
+
+	measure 'Alerts per Million Records' = DIVIDE([Total Alerts]*1000000,[Total Records])
+		lineageTag: 20a250fb-3545-4113-87fb-80a57742ea16
+		formatString: 0.00
+
+	measure 'Total Execution Time' = SUM(FactPerformance[Execution_Time_Seconds])
+		lineageTag: aa7a7858-73d8-437d-8f78-e03199313ef0
+		formatString: 0.00
+
+	measure 'Read Time' = SUM(FactPerformance[Read_Time_Seconds])
+		lineageTag: 0348adf3-8af9-4b9b-8dc8-8c395459fe8a
+		formatString: 0.00
+
+	measure 'Processing Time' = SUM(FactPerformance[Processing_Time_Seconds])
+		lineageTag: 995a7677-8898-4926-b8ef-0e5b2c6d4b84
+		formatString: 0.00
+
+	measure 'Write Time' = SUM(FactPerformance[Write_Time_Seconds])
+		lineageTag: deaa813f-9cec-471a-818a-c714bfbcd805
+		formatString: 0.00
+
+	measure 'Overall Throughput' = DIVIDE([Total Records],[Total Execution Time])
+		lineageTag: 37236ee2-5192-4e2c-88e5-5c579348546c
+		formatString: #,0
+
+	measure 'Average Batch Time' = AVERAGE(FactPerformance[Execution_Time_Seconds])
+		lineageTag: 8136995a-175d-4afe-86e8-49b57a94e34c
+		formatString: 0.00
+
+	measure 'Average Memory Estimate' = AVERAGE(FactPerformance[Memory_Usage_MB])
+		lineageTag: 2b762adf-cdfd-46e8-89e9-cb99514ec084
+		formatString: 0.00
+
+	measure 'Cumulative Records' = VAR N=MAX(DimBatch[Batch_Number]) RETURN CALCULATE([Total Records],FILTER(ALLSELECTED(DimBatch),DimBatch[Batch_Number]<=N))
+		lineageTag: a6a9d858-29d2-4093-9ef4-e8719a84aad0
+		formatString: #,0
+
+	measure 'Attribute Completeness' = CALCULATE([Compliance Rate],FactQuality[Rule_Category]="Completeness")
+		lineageTag: 66fed62f-ad79-4453-a064-087dd163c4ab
+		formatString: 0.00%
+
+	measure 'Missing Values' = CALCULATE([Rule Violations],FactQuality[Rule_Category]="Completeness")
+		lineageTag: 2122c105-bbe8-4cf9-ba62-9b923b072040
+		formatString: #,0
+
+	measure 'Minimum Attribute Score' = MINX(VALUES(FactQuality[Target_Attribute]),[Attribute Completeness])
+		lineageTag: 2c80b637-5edc-443c-ba53-9c02224f4c4b
+		formatString: 0.00%
+
+	measure 'Weakest Attribute' = VAR A=FILTER(ADDCOLUMNS(VALUES(FactQuality[Attribute_Label]),"@Score",[Attribute Completeness]),NOT ISBLANK([@Score])) VAR M=MINX(A,[@Score]) RETURN CONCATENATEX(FILTER(A,[@Score]=M),FactQuality[Attribute_Label],", ",FactQuality[Attribute_Label],ASC)
+		lineageTag: 5afd8623-ff39-4959-8be2-7301afc26bf4
+
+	measure 'Worst Attribute Rank' = IF(NOT ISBLANK([Attribute Completeness]),RANKX(FILTER(ALLSELECTED(FactQuality[Target_Attribute]),NOT ISBLANK([Attribute Completeness])),[Attribute Completeness],,ASC,DENSE))
+		lineageTag: 40fa56a5-5624-4bf8-a2a0-e6787137a6d6
+		formatString: #,0
+
+	measure 'PSI Alert Metric' = CALCULATE(MAX(FactAlerts[Metric_Value]),FactAlerts[Anomaly_Type]="Data Drift")
+		lineageTag: e5039179-1a7b-4f4d-82d7-4696eb7a557a
+		formatString: 0.00
+
+	measure 'Outlier Alert Percent' = CALCULATE(MAX(FactAlerts[Metric_Value]),FactAlerts[Anomaly_Type]="Numeric Outlier")
+		lineageTag: 489315bb-0fb4-4c57-9b89-dc2dd57d2af5
+		formatString: 0.00
+
+	measure 'Volume Alert Records' = CALCULATE(MAX(FactAlerts[Metric_Value]),FactAlerts[Anomaly_Type] IN {"Volume Spike","Volume Drop"})
+		lineageTag: 8e981027-0b81-463b-adc0-8d956a412a53
+		formatString: #,0
+
+	measure 'Volume Reference Mean' = CALCULATE(MAX(FactAlerts[Threshold_Reference]),FactAlerts[Anomaly_Type] IN {"Volume Spike","Volume Drop"})
+		lineageTag: b1a567ac-4483-45d6-9f07-b07c8da46a0a
+		formatString: 0.00
+
+	measure 'Benchmark Time' = SUM(FactBenchmark[Temps total (s)])
+		lineageTag: 39be7bd6-3b86-4725-af7b-67077d8d925e
+		formatString: 0.00
+
+	measure 'Benchmark Throughput' = SUM(FactBenchmark[Débit moyen (rows/s)])
+		lineageTag: 37edf90a-ed93-4864-9272-13c69c34812c
+		formatString: #,0
+
+	measure 'Benchmark Memory' = SUM(FactBenchmark[RAM/lot moy. (MB)])
+		lineageTag: 500fecb5-ed97-49e6-b4b0-489a64ca36b5
+		formatString: 0.00
+
+	measure 'Benchmark Batches' = SUM(FactBenchmark[Nb lots])
+		lineageTag: ed389baf-c1ce-43bc-be4b-8f9a9d3faff9
+		formatString: #,0
+
+	measure 'Completeness Weight' = SELECTEDVALUE(WeightCompleteness[Weight],20)
+		lineageTag: 645b93e4-d532-4394-a558-18d2fcfba63d
+		formatString: #,0
+
+	measure 'Uniqueness Weight' = SELECTEDVALUE(WeightUniqueness[Weight],20)
+		lineageTag: dc40d2c8-df5a-44fe-8290-ecc658d10309
+		formatString: #,0
+
+	measure 'Validity Weight' = SELECTEDVALUE(WeightValidity[Weight],20)
+		lineageTag: 8bce1727-2a9e-49a3-ad22-328fac7c65d6
+		formatString: #,0
+
+	measure 'Consistency Weight' = SELECTEDVALUE(WeightConsistency[Weight],20)
+		lineageTag: b607b132-abd7-44e8-bee3-d070b92ae9a9
+		formatString: #,0
+
+	measure 'Conformity Weight' = SELECTEDVALUE(WeightConformity[Weight],20)
+		lineageTag: 97fc3535-b17f-4100-8cfa-d5d44909f52e
+		formatString: #,0
+
+	measure 'Selected Target' = DIVIDE(SELECTEDVALUE(QualityTarget[Target],95),100)
+		lineageTag: 6c2dfd50-7621-4cf2-a5cb-e9d201419d56
+		formatString: 0.00%
+
+	measure 'Simulated Quality Score' = IF(ISBLANK([Global Quality Score]), BLANK(), DIVIDE([Completeness Weight]*[Completeness Score]+[Uniqueness Weight]*[Uniqueness Score]+[Validity Weight]*[Validity Score]+[Consistency Weight]*[Consistency Score]+[Conformity Weight]*[Conformity Score],[Completeness Weight]+[Uniqueness Weight]+[Validity Weight]+[Consistency Weight]+[Conformity Weight]))
+		lineageTag: af5db23e-7090-4ddd-9c33-1e5a539e1387
+		formatString: 0.00%
+
+	measure 'Score Change pp' = 100*([Simulated Quality Score]-[Global Quality Score])
+		lineageTag: b29d43b1-278c-4631-b101-9702f213962f
+		formatString: +0.00;-0.00;0.00
+
+	measure 'Quality Status' = IF(ISBLANK([Simulated Quality Score]),"No score",SWITCH(TRUE(),[Simulated Quality Score]>=[Selected Target],"Healthy",[Simulated Quality Score]>=[Selected Target]-0.1,"Warning","Critical"))
+		lineageTag: b105317e-458f-4015-b311-ec65c93c0a7b
+
+	measure 'Attributes Below Target' = COUNTROWS(FILTER(VALUES(FactQuality[Target_Attribute]),NOT ISBLANK([Attribute Completeness]) && [Attribute Completeness]<[Selected Target]))
+		lineageTag: 762843b7-89ab-47a5-a318-ed94addf2f46
+		formatString: #,0
+
+	measure 'Target Gap' = [Attribute Completeness]-[Selected Target]
+		lineageTag: 3419c0c1-b4e7-4034-8554-fad71f8f0b5c
+		formatString: 0.00%
+
+	measure 'Attribute Status' = IF(ISBLANK([Attribute Completeness]),BLANK(),IF([Attribute Completeness]<[Selected Target],"Investigate","Meets target"))
+		lineageTag: 2d5b3b8a-b71e-4432-9635-0882e07d39ed
+
+	measure 'Recommended Action' = SWITCH(SELECTEDVALUE(FactQuality[Rule_Category]),"Completeness","Inspect source coverage and optional fields","Uniqueness","Check duplicate IDs and ingestion retries","Validity","Inspect allowed ranges and domain values","Consistency","Check related fields and timestamps","Conformity","Review parsing and source schema","Select a rule category")
+		lineageTag: b1f65ec9-adca-4ad7-933e-3d53d0cd7455
+
+	measure 'Dataset Quality Score' = CALCULATE([Global Quality Score],REMOVEFILTERS(DimBatch),REMOVEFILTERS(FactQuality))
+		lineageTag: 18e55f1a-c67a-4823-b468-5eaa678a05d5
+		formatString: 0.00%
+
+	measure 'Records Display' = FORMAT([Total Records], "#,0")
+		lineageTag: b8db3453-b54a-50c5-848a-6c7caae886da
+
+	measure 'Priority Completeness' = VAR A=FILTER(ADDCOLUMNS(ALLSELECTED(FactQuality[Attribute_Label],FactQuality[Attribute_Order]),"@Score",CALCULATE([Attribute Completeness])),NOT ISBLANK([@Score])) VAR T=TOPN(5,A,[@Score],ASC,FactQuality[Attribute_Label],ASC) RETURN IF(CONTAINS(T,FactQuality[Attribute_Label],SELECTEDVALUE(FactQuality[Attribute_Label])),[Attribute Completeness])
+		lineageTag: f7fcd1c0-b108-5d07-a114-11c870ba02ca
+		formatString: 0.00%
+
+	measure 'Volume Alert Share' = DIVIDE(CALCULATE([Total Alerts],KEEPFILTERS(FactAlerts[Anomaly_Type] IN {"Volume Spike","Volume Drop"})),[Total Alerts])
+		lineageTag: 17c3bb8c-0a20-5984-abad-33014e1e95fe
+		formatString: 0.0%
+
+	measure 'Batch Scope' = IF(HASONEVALUE(DimBatch[Batch_ID]),SELECTEDVALUE(DimBatch[Batch_ID]),"Select a single batch")
+		lineageTag: 27413b12-5bb7-55eb-b6b7-ad6670a681fb
+
+	measure 'Failed Rule Violations' = IF([Rule Violations]>0,[Rule Violations],BLANK())
+		lineageTag: a5bd8d1c-0f70-5b3c-baaa-86f6fe2a3d4b
+		formatString: #,0
+
+	measure 'Failed Rule Compliance' = IF([Rule Violations]>0,[Compliance Rate],BLANK())
+		lineageTag: 2cc48fdf-7754-5ca4-84a4-b28d426fcc4d
+		formatString: 0.00%
+
+	measure 'Failed Rule Action' = IF([Rule Violations]>0,[Recommended Action],BLANK())
+		lineageTag: e11a54dd-2c6a-56b7-acc9-6cf7f3b7d9e1
+
+	measure 'Overview Finding' = VAR A=[Weakest Attribute] VAR V=[Minimum Attribute Score] RETURN IF(ISBLANK(V),"No completeness results in this selection",A & " | " & FORMAT(V,"0.00%") & " complete")
+		lineageTag: e6d3fbf7-8ed1-5a63-a336-ac04a3c57498
+
+	measure 'Batch Quality Delta pp' = IF(HASONEVALUE(DimBatch[Batch_ID]),100*([Global Quality Score]-[Dataset Quality Score]))
+		lineageTag: 03a5d937-5044-5990-a815-c03ba500f30f
+		formatString: +0.00;-0.00;0.00
+
+	measure 'Priority Target' = IF(NOT ISBLANK([Priority Completeness]),[Selected Target])
+		lineageTag: 22cda945-92ac-5330-9544-57724f77703c
+		formatString: 0.00%
+
+	measure 'Completeness Cell Color' = VAR S=[Attribute Completeness] RETURN SWITCH(TRUE(),ISBLANK(S),"#F0ECF4",S<0.85,"#EBA9C7",S<0.99,"#DFD0F0","#FFFFFF")
+		lineageTag: f064cf44-32e8-5e7b-b5d3-7716df4ab565
+
+	measure 'Performance Finding' = VAR C=TOPN(1,ALL(FactBenchmark),FactBenchmark[Temps total (s)],ASC,FactBenchmark[Config (chunk_size)],ASC) VAR M=TOPN(1,ALL(FactBenchmark),FactBenchmark[RAM/lot moy. (MB)],ASC,FactBenchmark[Config (chunk_size)],ASC) VAR CT=MAXX(C,FactBenchmark[Config (chunk_size)]) VAR MT=MAXX(M,FactBenchmark[Config (chunk_size)]) RETURN IF(ISEMPTY(C),"No benchmark available",IF(CT=MT,CT & " rows/batch: lower measured processing time and DataFrame size", "Fastest: " & CT & " | Smallest DataFrame: " & MT))
+		lineageTag: 1fb3a339-b8fb-48d9-b04c-628a4abfa15d
+
+	measure 'Policy Summary' = "Effective weights: " & FORMAT([Completeness Weight],"0") & " / " & FORMAT([Uniqueness Weight],"0") & " / " & FORMAT([Validity Weight],"0") & " / " & FORMAT([Consistency Weight],"0") & " / " & FORMAT([Conformity Weight],"0") & "  |  Target: " & FORMAT([Selected Target],"0%")
+		lineageTag: b3397200-5711-4b75-970e-8be07dc67f36
+
+	measure 'Anomaly Finding' = VAR N=[Total Alerts] VAR V=[Volume Alert Share] RETURN IF(N=0,"No alerts in this selection",FORMAT(V,"0.0%") & " of selected alerts relate to volume. Review the historical baseline.")
+		lineageTag: 8205ad0b-023c-4301-92f4-aca61cd61363
+
+	measure 'Selected Batch Count' = DISTINCTCOUNT(DimBatch[Batch_ID])
+		lineageTag: 2a0c3bbc-d3e4-494e-98f8-f9ed15469fca
+
+	measure 'Quality Compliance Display' = IF(ISBLANK([Compliance Rate]),BLANK(),FORMAT([Compliance Rate],IF(SELECTEDVALUE(FactQuality[Rule_Category])="Validity","0.0000%","0.00%")))
+		lineageTag: 3bffe64d-19e3-458b-aaf2-ee35cd9d7769
+
+	measure 'Throughput Display' = FORMAT([Overall Throughput],"#,0")
+		lineageTag: 187bbbe5-f18b-4a43-9731-6761c417e0b3
+
+	measure 'Memory Display' = FORMAT([Average Memory Estimate],"#,0.00")
+		lineageTag: bd2622c4-c955-480d-a4ed-e3bc8566ee22
+
+	partition Metrics = m
+		mode: import
+		source =
+				Table.TransformColumnTypes(#table({"Anchor"}, {{1}}), {{"Anchor", Int64.Type}})

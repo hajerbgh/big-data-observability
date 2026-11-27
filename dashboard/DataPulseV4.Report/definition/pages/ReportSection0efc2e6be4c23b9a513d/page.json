@@ -1,0 +1,86 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
+  "name": "ReportSection0efc2e6be4c23b9a513d",
+  "displayName": "Overview",
+  "displayOption": "FitToPage",
+  "width": 1600,
+  "height": 900,
+  "objects": {
+    "background": [
+      {
+        "properties": {
+          "color": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "Literal": {
+                    "Value": "'#F9F7FA'"
+                  }
+                }
+              }
+            }
+          },
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "visualInteractions": [
+    {
+      "source": "992ed121b21d3a63c4c7",
+      "target": "cc4e8764d43d7b0bdb96",
+      "type": "NoFilter"
+    },
+    {
+      "source": "992ed121b21d3a63c4c7",
+      "target": "b34f16ee568feac64592",
+      "type": "NoFilter"
+    },
+    {
+      "source": "992ed121b21d3a63c4c7",
+      "target": "358e835b273787f40203",
+      "type": "NoFilter"
+    },
+    {
+      "source": "992ed121b21d3a63c4c7",
+      "target": "5df2d8578545ed70be58",
+      "type": "NoFilter"
+    },
+    {
+      "source": "992ed121b21d3a63c4c7",
+      "target": "c8b1c8d416d8831dacd7",
+      "type": "NoFilter"
+    },
+    {
+      "source": "3de0dc6942e91969d219",
+      "target": "cc4e8764d43d7b0bdb96",
+      "type": "NoFilter"
+    },
+    {
+      "source": "3de0dc6942e91969d219",
+      "target": "b34f16ee568feac64592",
+      "type": "NoFilter"
+    },
+    {
+      "source": "3de0dc6942e91969d219",
+      "target": "358e835b273787f40203",
+      "type": "NoFilter"
+    },
+    {
+      "source": "3de0dc6942e91969d219",
+      "target": "5df2d8578545ed70be58",
+      "type": "NoFilter"
+    },
+    {
+      "source": "3de0dc6942e91969d219",
+      "target": "c8b1c8d416d8831dacd7",
+      "type": "NoFilter"
+    }
+  ]
+}

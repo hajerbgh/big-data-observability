@@ -1,0 +1,76 @@
+table FactQuality
+	lineageTag: 270b122b-2ed3-4180-9678-034b47f8f335
+
+	column Batch_ID
+		dataType: string
+		lineageTag: 13a9f6b4-783b-4bef-9367-351fec1bc2d6
+		summarizeBy: none
+		sourceColumn: Batch_ID
+
+	column Rule_Category
+		dataType: string
+		lineageTag: 71ffc5b8-7d6d-4a42-8ae9-92047eb2a2f9
+		summarizeBy: none
+		sourceColumn: Rule_Category
+
+	column Target_Attribute
+		dataType: string
+		lineageTag: 56fa6d71-5eeb-4f2b-8d64-e84f8b2cf45d
+		summarizeBy: none
+		sourceColumn: Target_Attribute
+
+	column Error_Count
+		dataType: int64
+		lineageTag: b9673b2d-b130-45d4-af74-7fcdde70b41a
+		summarizeBy: none
+		sourceColumn: Error_Count
+
+	column Affected_Record_Count
+		dataType: int64
+		lineageTag: a5256c7d-6904-41a3-9cf0-8de46beebd2f
+		summarizeBy: none
+		sourceColumn: Affected_Record_Count
+
+	column Total_Record_Count
+		dataType: int64
+		lineageTag: 47e313bd-d32b-44e0-9f2a-32cca643f4ab
+		summarizeBy: none
+		sourceColumn: Total_Record_Count
+
+	column 'Conformity_Rate_%'
+		dataType: double
+		lineageTag: 7c67bdd3-d2e0-4ea1-a571-b0c82798024f
+		summarizeBy: none
+		sourceColumn: Conformity_Rate_%
+
+	column Attribute_Label
+		dataType: string
+		lineageTag: 921952db-77a4-4fd9-a7f1-eafd47be8df0
+		summarizeBy: none
+		sourceColumn: Attribute_Label
+		sortByColumn: Attribute_Order
+
+	column Attribute_Order
+		dataType: int64
+		lineageTag: 272617c6-7d21-40d3-9c48-3f621603f546
+		summarizeBy: none
+		sourceColumn: Attribute_Order
+		isHidden
+
+	partition FactQuality = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\YourRepository\data\quality_metrics.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Headers, {{"Batch_ID", type text}, {"Rule_Category", type text}, {"Target_Attribute", type text}, {"Error_Count", Int64.Type}, {"Affected_Record_Count", Int64.Type}, {"Total_Record_Count", Int64.Type}, {"Conformity_Rate_%", type number}}, "en-US"),
+				    Labels = [#"End_Lat"="End latitude", #"End_Lng"="End longitude", #"Start_Lat"="Start latitude", #"Start_Lng"="Start longitude", #"Precipitation(in)"="Precipitation", #"Wind_Chill(F)"="Wind chill", #"Wind_Speed(mph)"="Wind speed", #"Visibility(mi)"="Visibility", #"Temperature(F)"="Temperature", #"Distance(mi)"="Distance", #"Humidity(%)"="Humidity", #"Pressure(in)"="Pressure", #"Weather_Condition"="Weather condition", #"Wind_Direction"="Wind direction", #"Weather_Timestamp"="Weather timestamp", #"Airport_Code"="Airport code"],
+				    Named = Table.AddColumn(Typed, "Attribute_Label", each Record.FieldOrDefault(Labels, [Target_Attribute], [Target_Attribute]), type text),
+				    Grouped = Table.Group(Table.SelectRows(Named, each [Rule_Category] = "Completeness"), {"Target_Attribute"}, {{"Errors", each List.Sum([Error_Count]), Int64.Type}, {"Checks", each List.Sum([Total_Record_Count]), Int64.Type}}),
+				    Scored = Table.AddColumn(Grouped, "MissingRate", each if [Checks] > 0 then [Errors]/[Checks] else 0, type number),
+				    Ranked = Table.AddIndexColumn(Table.Sort(Scored, {{"MissingRate", Order.Descending}, {"Target_Attribute", Order.Ascending}}), "Rank", 1, 1, Int64.Type),
+				    Joined = Table.NestedJoin(Named, {"Target_Attribute"}, Ranked, {"Target_Attribute"}, "Ranking", JoinKind.LeftOuter),
+				    Expanded = Table.ExpandTableColumn(Joined, "Ranking", {"Rank"}, {"Attribute_Order"}),
+				    Final = Table.ReplaceValue(Expanded, null, 9999, Replacer.ReplaceValue, {"Attribute_Order"})
+				in
+				    Final

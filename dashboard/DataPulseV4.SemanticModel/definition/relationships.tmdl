@@ -1,0 +1,11 @@
+relationship d037c016-d101-41f5-b05c-685f4ecb5b0f
+	fromColumn: FactQuality.Batch_ID
+	toColumn: DimBatch.Batch_ID
+
+relationship 08610a0e-0ea4-41e9-b17f-3bfb0fe3a780
+	fromColumn: FactAlerts.Batch_ID
+	toColumn: DimBatch.Batch_ID
+
+relationship f93162d9-aee9-4940-bc74-d7fa9dfa85fa
+	fromColumn: FactPerformance.Batch_ID
+	toColumn: DimBatch.Batch_ID
